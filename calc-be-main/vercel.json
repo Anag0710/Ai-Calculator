@@ -14,10 +14,5 @@
   ],
   "env": {
     "PYTHONPATH": "."
-  },
-  "functions": {
-    "api/main.py": {
-      "runtime": "python3.9"
-    }
   }
 }
