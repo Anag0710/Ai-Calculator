@@ -124,34 +124,42 @@ export default function Home() {
 
     const runRoute = async () => {
         const canvas = canvasRef.current;
+        console.log("API URL being used:", import.meta.env.VITE_API_URL);
+        
         if (canvas) {
-            const response = await axios({
-                method: 'post',
-                url: `${import.meta.env.VITE_API_URL}/calculate`,
-                data: {
-                    image: canvas.toDataURL('image/png'),
-                    dict_of_vars: dictOfVars,
-                },
-            });
+            try {
+                const response = await axios({
+                    method: 'post',
+                    url: `${import.meta.env.VITE_API_URL}/calculate`,
+                    data: {
+                        image: canvas.toDataURL('image/png'),
+                        dict_of_vars: dictOfVars,
+                    },
+                });
 
-            const resp = await response.data;
-            resp.data.forEach((data: Response) => {
-                if (data.assign === true) {
-                    setDictOfVars({
-                        ...dictOfVars,
-                        [data.expr]: data.result,
-                    });
-                }
-            });
+                console.log("Response received:", response);
+                const resp = await response.data;
+                resp.data.forEach((data: Response) => {
+                    if (data.assign === true) {
+                        setDictOfVars({
+                            ...dictOfVars,
+                            [data.expr]: data.result,
+                        });
+                    }
+                });
 
-            resp.data.forEach((data: Response) => {
-                setTimeout(() => {
-                    setResult({
-                        expression: data.expr,
-                        answer: data.result,
-                    });
-                }, 1000);
-            });
+                resp.data.forEach((data: Response) => {
+                    setTimeout(() => {
+                        setResult({
+                            expression: data.expr,
+                            answer: data.result,
+                        });
+                    }, 1000);
+                });
+            } catch (error) {
+                console.error("API request failed:", error);
+                // Add error handling here
+            }
         }
     };
 

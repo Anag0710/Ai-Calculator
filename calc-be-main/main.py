@@ -11,9 +11,10 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(lifespan=lifespan)
 
+# Update CORS to allow all origins during testing
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["https://your-frontend-url.vercel.app", "http://localhost:5173"],
+    allow_origins=["*"],  # For testing, in production use specific origins
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -22,6 +23,15 @@ app.add_middleware(
 @app.get('/')
 async def root():
     return {"message": "Server is running"}
+
+@app.get("/status")
+async def status():
+    return {"status": "ok", "message": "API is running", "endpoints": ["/calculate"]}
+
+@app.post("/calculate")
+async def calculate_route(request_data: YourRequestSchema):
+    # Your calculation logic
+    return {"data": [{"expr": "your_expression", "result": "your_result", "assign": False}]}
 
 app.include_router(calculator_router, prefix="/calculate", tags=["calculate"])
 

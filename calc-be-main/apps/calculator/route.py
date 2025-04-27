@@ -18,3 +18,8 @@ async def run(data: ImageData):
         data.append(response)
     print('response in route: ', response)
     return {"message": "Image processed", "data": data, "status": "success"}
+
+@router.post("/calculate")
+async def calculate(request_data: YourRequestSchema):
+    # Your calculation logic
+    return {"data": [{"expr": "your_expression", "result": "your_result", "assign": False}]}
